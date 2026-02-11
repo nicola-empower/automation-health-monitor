@@ -34,6 +34,12 @@ export async function POST(req: NextRequest) {
     const dashboardApiKey = process.env.DASHBOARD_API_KEY;
 
     if (!dashboardApiKey || apiKey !== dashboardApiKey) {
+        console.error('AUTH_FAILURE:', {
+            received_exists: !!apiKey,
+            received_start: apiKey?.substring(0, 3) + '...',
+            expected_exists: !!dashboardApiKey,
+            expected_start: dashboardApiKey?.substring(0, 3) + '...'
+        });
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
