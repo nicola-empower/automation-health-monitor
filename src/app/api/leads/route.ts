@@ -37,36 +37,61 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const { name, email, company, notes } = await req.json();
-    const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+    const payload = await req.json();
+    const { data = {}, meta = {}, type = "CONTACT" } = payload;
+    const fp = meta.fingerprint || {};
+    const behavior = meta.behavior || {};
 
+    const spreadsheetId = process.env.GOOGLE_SHEET_ID;
     if (!spreadsheetId) return NextResponse.json({ error: 'Not configured' }, { status: 500 });
 
     try {
+        // 1. Save to Evidence Log (Matching the 14 columns in the user's script)
+        const timestamp = new Date().toISOString();
+        const signature = `Res:${fp.screen || 'N/A'} | Px:${fp.devicePixelRatio || 'N/A'} | Cores:${fp.hardwareConcurrency || 'N/A'} | RAM:${fp.deviceMemory || 'N/A'}GB`;
+
         await appendSheetData(spreadsheetId, 'Leads!A2', [[
-            new Date().toISOString(),
-            name,
-            email,
-            company,
-            notes
+            timestamp,
+            type,
+            data.name || "N/A",
+            data.email || "N/A",
+            data.message || "N/A",
+            meta.ip || "UNKNOWN",
+            // Risk Calculation Logic (Same as Apps Script)
+            fp.webdriver ? "HIGH (BOT)" : (behavior.pasteDetected ? "MEDIUM" : "LOW"),
+            signature,
+            `${fp.platform || 'N/A'} - ${fp.userAgent || 'N/A'}`,
+            behavior.typingFormatted || "N/A",
+            behavior.pasteDetected ? "YES" : "NO",
+            fp.screen || "N/A",
+            `${fp.hardwareConcurrency || 'N/A'} Cores / ${fp.deviceMemory || 'N/A'}GB`,
+            JSON.stringify(meta)
         ]]);
 
-        // Email Notification Bridge
-        const notificationUrl = company.includes("ROI")
+        // 2. Email Notification Bridge (Forward the FULL payload)
+        const notificationUrl = type === "ROI_CALC"
             ? process.env.ROI_NOTIFICATION_URL
             : process.env.CONTACT_NOTIFICATION_URL;
 
         if (notificationUrl) {
+            // Forward the exact payload the Apps Script expects
             fetch(notificationUrl, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, company, notes })
+                body: JSON.stringify(payload)
             }).catch(e => console.error("Notification failed", e));
         }
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        return NextResponse.json({ error: 'Failed to submit lead' }, { status: 500 });
+        console.error('Lead Submission Error:', {
+            message: error.message,
+            stack: error.stack,
+            cause: error.cause
+        });
+        return NextResponse.json({
+            error: 'Failed to submit lead',
+            details: error.message
+        }, { status: 500 });
     }
 }
