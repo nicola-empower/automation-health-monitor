@@ -77,6 +77,15 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-4 text-xs font-mono border-r border-white/10 pr-6 mr-2">
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-widest leading-none mb-1">Active_Nodes</span>
+                <span className="text-xl font-bold text-primary tabular-nums">
+                  {displayServices ? String(displayServices.length).padStart(2, '0') : '--'}
+                </span>
+              </div>
+            </div>
+
             <div className="hidden md:flex items-center gap-4 text-xs font-mono border-r border-white/10 pr-6 mr-2">
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-success" />
