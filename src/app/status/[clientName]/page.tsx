@@ -75,15 +75,15 @@ export default function ClientStatusPage() {
                     <div className="flex items-center gap-6">
                         <div className="hidden md:flex items-center gap-4 text-[10px] font-mono uppercase">
                             <div className="flex items-center gap-1.5">
-                                <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
+                                <div className={cn("w-1.5 h-1.5 rounded-full", isLight ? "bg-[#003366]" : "bg-success shadow-[0_0_8px_rgba(34,197,94,0.4)]")} />
                                 <span className={isLight ? "text-gray-500" : "text-muted-foreground"}>Nominal</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <div className="w-1.5 h-1.5 rounded-full bg-warning shadow-[0_0_8px_rgba(234,179,8,0.4)]" />
+                                <div className={cn("w-1.5 h-1.5 rounded-full bg-warning", !isLight && "shadow-[0_0_8px_rgba(234,179,8,0.4)]")} />
                                 <span className={isLight ? "text-gray-500" : "text-muted-foreground"}>Silence</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <div className="w-1.5 h-1.5 rounded-full bg-error shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
+                                <div className={cn("w-1.5 h-1.5 rounded-full bg-error", !isLight && "shadow-[0_0_8px_rgba(239,68,68,0.4)]")} />
                                 <span className={isLight ? "text-gray-500" : "text-muted-foreground"}>Failure</span>
                             </div>
                         </div>

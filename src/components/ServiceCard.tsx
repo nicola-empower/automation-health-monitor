@@ -37,9 +37,9 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
 
     const statusConfig = {
         nominal: {
-            color: isLight ? 'text-success' : 'text-success',
+            color: isLight ? 'text-[#003366]' : 'text-success',
             icon: ShieldCheck,
-            borderColor: isLight ? 'border-success/20' : 'border-success/30',
+            borderColor: isLight ? 'border-[#003366]/20' : 'border-success/30',
             glow: isLight ? 'shadow-sm' : 'glow-success',
             label: 'System Nominal',
         },
@@ -97,7 +97,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                 <div className="flex items-center gap-2">
                     <div className={cn(
                         "w-2 h-2 rounded-full",
-                        !isActive ? "bg-gray-300" : (status === 'nominal' ? 'bg-success' : status === 'warning' ? 'bg-warning' : 'bg-error'),
+                        !isActive ? "bg-gray-300" : (status === 'nominal' ? (isLight ? 'bg-[#003366]' : 'bg-success') : status === 'warning' ? 'bg-warning' : 'bg-error'),
                         isActive && "animate-pulse"
                     )} />
                     <span className={cn("text-sm font-medium", isActive ? color : "text-gray-400")}>
