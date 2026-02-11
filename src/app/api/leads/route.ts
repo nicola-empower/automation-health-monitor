@@ -34,13 +34,18 @@ export async function POST(req: NextRequest) {
     const dashboardApiKey = process.env.DASHBOARD_API_KEY;
 
     if (!dashboardApiKey || apiKey !== dashboardApiKey) {
+        const failureReason = !dashboardApiKey ? "MISSING_DASHBOARD_API_KEY_ON_SERVER" : "KEY_VALUE_MISMATCH";
         console.error('AUTH_FAILURE:', {
-            received_exists: !!apiKey,
-            received_start: apiKey?.substring(0, 3) + '...',
-            expected_exists: !!dashboardApiKey,
-            expected_start: dashboardApiKey?.substring(0, 3) + '...'
+            reason: failureReason,
+            received_start: apiKey?.substring(0, 3) || 'empty',
+            expected_start: dashboardApiKey?.substring(0, 3) || 'empty'
         });
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        return NextResponse.json({
+            error: 'Forbidden',
+            code: 'AUTH_FAILED',
+            reason: failureReason,
+            suggestion: "Check Vercel Env Vars for Dashboard project and Redeploy."
+        }, { status: 403 });
     }
 
     const payload = await req.json();
