@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
                 '',   // TriggerURL (empty for now)
                 'TRUE' // IsActive
             ];
-            await appendSheetData(spreadsheetId, 'A:I', [newRow]);
+            await appendSheetData(spreadsheetId, 'automation heath!A:I', [newRow]);
 
             return NextResponse.json({
                 success: true,
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
         // Update the specific row
         // Column indices: D=3, E=4, F=5
-        const updateRange = `D${rowIndex + 1}:F${rowIndex + 1}`;
+        const updateRange = `automation heath!D${rowIndex + 1}:F${rowIndex + 1}`;
         await updateSheetData(spreadsheetId, updateRange, [[status || 'nominal', currentTime, message || '']]);
 
         // TRIGGER TRELLO ALERT ON FAILURE

@@ -43,14 +43,17 @@ export async function POST(req: NextRequest) {
     const behavior = meta.behavior || {};
 
     const spreadsheetId = process.env.GOOGLE_SHEET_ID;
-    if (!spreadsheetId) return NextResponse.json({ error: 'Not configured' }, { status: 500 });
+    if (!spreadsheetId) {
+        console.error("MISSINGGOOGLE_SHEET_ID");
+        return NextResponse.json({ error: 'Not configured' }, { status: 500 });
+    }
 
     try {
         // 1. Save to Evidence Log (Matching the 14 columns in the user's script)
         const timestamp = new Date().toISOString();
         const signature = `Res:${fp.screen || 'N/A'} | Px:${fp.devicePixelRatio || 'N/A'} | Cores:${fp.hardwareConcurrency || 'N/A'} | RAM:${fp.deviceMemory || 'N/A'}GB`;
 
-        await appendSheetData(spreadsheetId, 'Leads!A2', [[
+        const rowData = [[
             timestamp,
             type,
             data.name || "N/A",
@@ -66,7 +69,17 @@ export async function POST(req: NextRequest) {
             fp.screen || "N/A",
             `${fp.hardwareConcurrency || 'N/A'} Cores / ${fp.deviceMemory || 'N/A'}GB`,
             JSON.stringify(meta)
-        ]]);
+        ]];
+
+        let sourceTab = 'Leads';
+        try {
+            await appendSheetData(spreadsheetId, 'Leads!A2', rowData);
+        } catch (e) {
+            console.warn("Target 'Leads' tab missing, falling back to 'automation heath'");
+            sourceTab = 'automation heath';
+            // Fallback to the misspelled tab name I saw in your screenshot
+            await appendSheetData(spreadsheetId, 'automation heath!A2', rowData);
+        }
 
         // 2. Email Notification Bridge (Forward the FULL payload)
         const notificationUrl = type === "ROI_CALC"
@@ -74,15 +87,33 @@ export async function POST(req: NextRequest) {
             : process.env.CONTACT_NOTIFICATION_URL;
 
         if (notificationUrl) {
-            // Forward the exact payload the Apps Script expects
-            fetch(notificationUrl, {
+            console.log("Forwarding to GAS Bridge:", notificationUrl);
+
+            // MANUAL REDIRECT FOLLOW: Google Apps Script redirects dropped bodies in library fetch.
+            // We follow manually to ensure the POST body is preserved.
+            let res = await fetch(notificationUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).catch(e => console.error("Notification failed", e));
+                body: JSON.stringify(payload),
+                redirect: 'manual'
+            });
+
+            if (res.status === 302 || res.status === 301) {
+                const redirectUrl = res.headers.get('location');
+                if (redirectUrl) {
+                    console.log("Following Redirect to:", redirectUrl);
+                    res = await fetch(redirectUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+            }
+
+            console.log("Bridge Final Status:", res.status);
         }
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true, saved_to: sourceTab });
     } catch (error: any) {
         console.error('Lead Submission Error:', {
             message: error.message,
