@@ -5,10 +5,12 @@ export async function middleware(req: NextRequest | any) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     const { pathname } = req.nextUrl;
 
-    // Allow auth-related requests and static files
+    // Allow auth-related requests, static files, and public status pages
     if (
         pathname.startsWith('/api/auth') ||
         pathname.startsWith('/api/heartbeat') ||
+        pathname.startsWith('/api/services') || // We will filter this in the route
+        pathname.startsWith('/status') ||
         pathname.startsWith('/_next') ||
         pathname.includes('favicon.ico') ||
         pathname === '/login'
