@@ -16,7 +16,7 @@ This dashboard acts as a centralized "Command Center" for all your automation lo
 
 ## 💼 Case Study: Solving Distributed Monitoring
 ### The Challenge
-As an automation specialist managing **10+ independent projects** across various Google accounts, I faced a "visibility gap." I had scripts running everywhere, but no central place to know if they were actually working or silently failing.
+As an automation specialist managing **100+ independent projects** across various Google accounts, I faced a "visibility gap." I had scripts running everywhere, but no central place to know if they were actually working or silently failing.
 
 ### The Solution
 I built this **Automation Health Monitor** to bridge that gap. By creating a lightweight "Heartbeat API," I enabled my scripts to report their status to a single, secure URL. 
@@ -39,3 +39,13 @@ Detailed setup instructions for the **Heartbeat API** and **Service Account** ca
 ---
 Built by **Nicola Berry** | **Empower Automation**
 🔗 [empowerautomation.co.uk](https://empowerautomation.co.uk)
+
+notes: Your "White Label" Client Status Pages are now live! 🚀
+
+How to use them:
+Unique Client URLs: You can now give each client their own specific link, for example:
+https://automation-health-monitor.vercel.app/status/Oak%20&%20Chisel
+https://automation-health-monitor.vercel.app/status/Empower%20Admin
+Public Access: These pages are public (no password required). This builds massive trust as clients can see their own heartbeats in real-time.
+Security: Your main dashboard (/) remains secure and password-protected. Clients cannot see other clients' data—they only see cards where the ClientName matches the URL.
+Premium Branding: The footer now says "Managed by Empower Automation" to reinforce your brand.

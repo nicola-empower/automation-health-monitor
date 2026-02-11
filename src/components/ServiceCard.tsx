@@ -47,11 +47,17 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
 
     return (
         <div className={cn(
-            "glass glass-hover p-6 rounded-xl transition-all duration-300 flex flex-col gap-4",
+            "glass glass-hover p-6 rounded-xl transition-all duration-300 flex flex-col gap-4 relative overflow-hidden",
             borderColor,
-            glow
+            status === 'offline' ? 'glow-error-flicker' : glow
         )}>
-            <div className="flex justify-between items-start">
+            {status === 'offline' && (
+                <div className="absolute inset-0 bg-error/5 pointer-events-none animate-pulse" />
+            )}
+            <div className={cn(
+                "flex justify-between items-start",
+                status === 'offline' && "animate-glitch"
+            )}>
                 <div className="space-y-1">
                     <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
                         {clientName || 'Automation Script'}
