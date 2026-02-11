@@ -8,13 +8,17 @@
 
 const CONFIG = {
   // Your Next.js Dashboard URL + /api/heartbeat
-  DASHBOARD_API: "https://your-dashboard-url.vercel.app/api/heartbeat", 
+  DASHBOARD_API: "https://automation-health-monitor.vercel.app/api/heartbeat", 
   
   // Must match HEARTBEAT_SECRET_KEY in your .env.local
   SECRET_KEY: "secret_123", 
   
   // Unique ID for this specific script (must exist in the sheet)
-  SERVICE_ID: "my-script-001" 
+  SERVICE_ID: "my-script-001",
+  
+  // These are used for AUTO-REGISTRATION if the ID is new
+  SERVICE_NAME: "Shopify Sync Engine",
+  CLIENT_NAME: "Oak & Chisel"
 };
 
 /**
@@ -49,6 +53,8 @@ function setupSheet() {
 function sendHeartbeat(status = "nominal", message = "System running optimally.") {
   const payload = {
     service_id: CONFIG.SERVICE_ID,
+    service_name: CONFIG.SERVICE_NAME,
+    client_name: CONFIG.CLIENT_NAME,
     status: status,
     message: message
   };
