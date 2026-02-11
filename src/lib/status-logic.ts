@@ -10,13 +10,22 @@ export interface ServiceData {
     scheduleHours: number;
 }
 
-export function calculateStatus(lastPing: string, scheduleHours: number): ServiceStatus {
+export function calculateStatus(lastPing: string, scheduleHours: number, reportedStatus?: string): ServiceStatus {
     if (!lastPing) return 'offline';
 
     const lastPingDate = new Date(lastPing);
     const now = new Date();
     const diffInHours = (now.getTime() - lastPingDate.getTime()) / (1000 * 60 * 60);
 
+    // 1. Check for explicit error/warning reported by the script
+    if (reportedStatus?.toLowerCase() === 'error' || reportedStatus?.toLowerCase() === 'failure') {
+        return 'offline';
+    }
+    if (reportedStatus?.toLowerCase() === 'warning') {
+        return 'warning';
+    }
+
+    // 2. Fallback to time-based status
     if (diffInHours > scheduleHours * 1.2) { // 20% buffer
         return 'offline';
     }

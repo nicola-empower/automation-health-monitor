@@ -9,30 +9,62 @@ import { signOut } from "next-auth/react";
 export default function Home() {
   const [services, setServices] = useState<any[] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   const [currentTime, setCurrentTime] = useState<string>("");
 
+  async function fetchServices() {
+    try {
+      const response = await fetch('/api/services');
+      if (response.ok) {
+        const data = await response.json();
+        setServices(data);
+      } else {
+        const errorText = await response.text();
+        console.error("Uplink Error:", errorText);
+      }
+    } catch (error) {
+      console.error("Connection Failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     setCurrentTime(new Date().toLocaleTimeString());
-
-    async function fetchServices() {
-      try {
-        const response = await fetch('/api/services');
-        if (response.ok) {
-          const data = await response.json();
-          setServices(data);
-        } else {
-          const errorText = await response.text();
-          console.error("Uplink Error:", errorText);
-        }
-      } catch (error) {
-        console.error("Connection Failed:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchServices();
   }, []);
+
+  const handleToggle = async (id: string) => {
+    setProcessingId(id);
+    try {
+      const response = await fetch('/api/services/control', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ service_id: id, action: 'toggle' })
+      });
+      if (response.ok) {
+        await fetchServices();
+      }
+    } catch (error) {
+      console.error("Toggle Failed:", error);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleTrigger = async (url: string) => {
+    // We don't need a specific processing ID here as it opens a new tab or pings
+    // But for better UX we could show a global toast/loading
+    try {
+      // Option 1: Ping the URL invisibly
+      await fetch(url, { mode: 'no-cors' });
+      alert("Manual Trigger Sent (Voice Activated)");
+    } catch (error) {
+      // Fallback for CORS: Open in new window
+      window.open(url, '_blank');
+    }
+  };
 
   // Mock data as fallback
   const mockServices = [
@@ -133,7 +165,14 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayServices ? (
             displayServices.map((service, index) => (
-              <ServiceCard key={index} {...service} />
+              <ServiceCard
+                key={index}
+                {...service}
+                lastPing={service.lastPingFormatted || service.lastPing}
+                onToggle={handleToggle}
+                onTrigger={handleTrigger}
+                isProcessing={processingId === service.id}
+              />
             ))
           ) : (
             Array.from({ length: 3 }).map((_, i) => (

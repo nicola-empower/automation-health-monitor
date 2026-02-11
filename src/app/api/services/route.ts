@@ -21,16 +21,19 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        const data = await getSheetData(spreadsheetId, 'A2:G');
+        const data = await getSheetData(spreadsheetId, 'A2:I');
         if (!data) return NextResponse.json([]);
 
         let services = data.map((row: any) => ({
             id: row[0],
             name: row[1],
             clientName: row[2],
-            status: calculateStatus(row[4], parseFloat(row[6]) || 24),
-            lastPing: formatTimeAgo(row[4]),
-            notes: row[5] || ""
+            status: calculateStatus(row[4], parseFloat(row[6]) || 24, row[3]), // Pass reported status (row 3)
+            lastPing: row[4], // Store original for processing if needed
+            lastPingFormatted: formatTimeAgo(row[4]),
+            notes: row[5] || "",
+            triggerUrl: row[7] || "", // Column H
+            isActive: String(row[8]).toUpperCase() === "FALSE" ? false : true // Column I
         }));
 
         // Apply filtering if clientNameFilter is provided

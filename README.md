@@ -11,8 +11,11 @@ This dashboard acts as a centralized "Command Center" for all your automation lo
 
 - **Auto-Registration**: New scripts appear on the dashboard automatically when they first ping. No manual sheet entry required.
 - **Security**: Password-protected (NextAuth) and API-keyed heartbeat reception.
-- **Telemetry**: Tracks "Time Ago" since the last heartbeat and alerts you (Green/Amber/Red) based on custom schedules.
-- **Backend**: Uses a simple Google Sheet as the source of truth—no database setup required.
+- **Remote Command Center**: 
+    - **🚀 Manual Trigger**: Execute scripts directly from the dashboard using Webhook URLs.
+    - **🔌 Kill Switch**: Remotely enable or disable automations. Scripts can "self-terminate" if deactivated on the dashboard.
+- **Telemetry**: Real-time status logic that handles both time-based "Silence" and script-reported "Failure" states.
+- **Backend**: Uses a simple Google Sheet as the serverless source of truth.
 
 ## 💼 Case Study: Solving Distributed Monitoring
 ### The Challenge

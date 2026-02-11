@@ -18,15 +18,21 @@ export async function POST(req: NextRequest) {
         }
 
         const spreadsheetId = process.env.GOOGLE_SHEET_ID!;
-        const range = 'A:G';
+        const range = 'A:I';
 
         // Fetch existing data to find the row
         const values = await getSheetData(spreadsheetId, range);
-        const rowIndex = values ? values.findIndex(row => row[0] === service_id) : -1;
         const currentTime = new Date().toISOString();
+
+        if (!values) {
+            return NextResponse.json({ error: 'Data not found' }, { status: 404 });
+        }
+
+        const rowIndex = values.findIndex(row => row[0] === service_id);
 
         if (rowIndex === -1) {
             // AUTO-REGISTRATION: Create a new row if it doesn't exist
+            const { appendSheetData } = await import('@/lib/google-sheets');
             const newRow = [
                 service_id,
                 service_name || "New Automation",
@@ -34,23 +40,29 @@ export async function POST(req: NextRequest) {
                 status || "nominal",
                 currentTime,
                 message || "Initial heartbeat received (Auto-Registered)",
-                24 // Default 24h schedule
+                '24', // Default 24h schedule
+                '',   // TriggerURL (empty for now)
+                'TRUE' // IsActive
             ];
-            const { appendSheetData } = await import('@/lib/google-sheets');
-            await appendSheetData(spreadsheetId, 'A:A', [newRow]);
+            await appendSheetData(spreadsheetId, 'A:I', [newRow]);
 
             return NextResponse.json({
                 success: true,
                 message: "Service auto-registered",
-                timestamp: currentTime
+                timestamp: currentTime,
+                isActive: true
             });
         }
 
         // Update the specific row
+        // Column indices: D=3, E=4, F=5
         const updateRange = `D${rowIndex + 1}:F${rowIndex + 1}`;
         await updateSheetData(spreadsheetId, updateRange, [[status || 'nominal', currentTime, message || '']]);
 
-        return NextResponse.json({ success: true, timestamp: currentTime });
+        // Fetch isActive status from the existing row (column I, index 8)
+        const isActive = String(values[rowIndex][8]).toUpperCase() !== "FALSE";
+
+        return NextResponse.json({ success: true, timestamp: currentTime, isActive });
     } catch (error: any) {
         console.error('Heartbeat Error:', error);
         return NextResponse.json({ error: error.message }, { status: 500 });

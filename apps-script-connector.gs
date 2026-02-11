@@ -48,31 +48,88 @@ function setupSheet() {
 }
 
 /**
- * Call this function at the end of your automation scripts
+ * UPDATED: Integrated with Remote Controls (Manual Trigger & Kill Switch)
  */
-function sendHeartbeat(status = "nominal", message = "System running optimally.") {
+function doGet(e) {
+  // Use this function as a Web App to enable MANUAL TRIGGERS from the dashboard
+  try {
+    // IMPORTANT: Replace 'sendWorkBriefing()' with your actual main function call
+    // For example: const result = myMainAutomationFunction();
+    const result = sendWorkBriefing(); // Or your main function
+    return ContentService.createTextOutput("Trigger Success: " + result).setMimeType(ContentService.MimeType.TEXT);
+  } catch (err) {
+    return ContentService.createTextOutput("Trigger Error: " + err.toString()).setMimeType(ContentService.MimeType.TEXT);
+  }
+}
+
+/**
+ * Call this function at the end of your automation scripts
+ * It now also checks for remote kill switch status.
+ * @param {string} status - The status of the service (e.g., "nominal", "warning", "error").
+ * @param {string} message - A descriptive message about the service's state.
+ * @returns {boolean} - True if the service is allowed to continue, false if remotely disabled.
+ */
+function sendHeartbeat(status, message) {
+  const url = CONFIG.DASHBOARD_API;
   const payload = {
     service_id: CONFIG.SERVICE_ID,
     service_name: CONFIG.SERVICE_NAME,
     client_name: CONFIG.CLIENT_NAME,
-    status: status,
-    message: message
+    status: status || "nominal",
+    message: message || ""
   };
-
+  
   const options = {
-    method: 'post',
-    contentType: 'application/json',
+    method: "post",
+    contentType: "application/json",
     headers: {
-      'x-api-key': CONFIG.SECRET_KEY
+      "x-api-key": CONFIG.API_KEY
     },
     payload: JSON.stringify(payload),
     muteHttpExceptions: true
   };
-
+  
   try {
-    const response = UrlFetchApp.fetch(CONFIG.DASHBOARD_API, options);
+    const response = UrlFetchApp.fetch(url, options);
+    const data = JSON.parse(response.getContentText());
+    
+    // Check if the script has been disabled remotely
+    if (data && data.isActive === false) {
+      Logger.log("DASHBOARD ALERT: This service has been disabled remotely (Kill Switch). Operation halted.");
+      return false; // Signal to calling function to STOP
+    }
+    
     Logger.log("Heartbeat Sent: " + response.getContentText());
+    return true;
   } catch (e) {
-    Logger.log("Failed to send heartbeat: " + e.toString());
+    Logger.log("Heartbeat failed: " + e.toString());
+    return true; // Continue anyway if dashboard is down
   }
+}
+
+/**
+ * Example usage in your main function
+ * Demonstrates how to integrate the kill switch logic.
+ */
+function exampleMain() {
+  // Check heartbeat at start
+  const isAllowed = sendHeartbeat("nominal", "Script starting execution...");
+  if (!isAllowed) {
+    Logger.log("Script terminated by remote kill switch.");
+    return; // Exit if disabled remotely
+  }
+  
+  // Your logic here...
+  Logger.log("Processing work...");
+  
+  // Update at end
+  sendHeartbeat("nominal", "Work complete.");
+  Logger.log("Script finished successfully.");
+}
+
+// Placeholder for the user's actual main function if using doGet
+function sendWorkBriefing() {
+  Logger.log("sendWorkBriefing function called via doGet.");
+  // Add your actual automation logic here
+  return "Work briefing initiated.";
 }
