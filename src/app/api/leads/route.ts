@@ -31,7 +31,9 @@ export async function POST(req: NextRequest) {
     // This endpoint will be used by the Astro site to submit leads
     // It should be public but protected by an API Key
     const apiKey = req.headers.get('x-api-key');
-    if (apiKey !== process.env.DASHBOARD_API_KEY) {
+    const dashboardApiKey = process.env.DASHBOARD_API_KEY;
+
+    if (!dashboardApiKey || apiKey !== dashboardApiKey) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

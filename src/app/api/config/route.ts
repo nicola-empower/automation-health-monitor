@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+    if (!spreadsheetId) return NextResponse.json({ error: 'Not configured' }, { status: 500 });
 
     try {
         // We'll update rows based on keys. For simplicity in a prototype,
