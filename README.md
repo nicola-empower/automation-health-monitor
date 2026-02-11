@@ -11,23 +11,27 @@ This dashboard acts as a centralized "Command Center" for all your automation lo
 
 - **Auto-Registration**: New scripts appear on the dashboard automatically when they first ping. No manual sheet entry required.
 - **Security**: Password-protected (NextAuth) and API-keyed heartbeat reception.
-- **Remote Command Center**: 
-    - **🚀 Manual Trigger**: Execute scripts directly from the dashboard using Webhook URLs.
-    - **🔌 Kill Switch**: Remotely enable or disable automations. Scripts can "self-terminate" if deactivated on the dashboard.
-- **Telemetry**: Real-time status logic that handles both time-based "Silence" and script-reported "Failure" states.
-- **Backend**: Uses a simple Google Sheet as the serverless source of truth.
+- **Business OS Expansion**: 
+    - **👥 Leads Intelligence**: Real-time prospect tracking from external Astro/Web sites.
+    - **📊 Marketing ROI**: Dynamic dashboard for tracking social performance and template conversion.
+    - **⚙️ Site Management**: Remote control of production site assets (marquee text, contact details, rates).
+- **Incident Management**:
+    - **🚨 Trello Integration**: Automated card creation for immediate failure response.
+- **Bespoke Branding**:
+    - **🎨 Client Portals**: Dedicated, white-labeled status pages with custom logos and professional Light/Dark themes.
 
-## 💼 Case Study: Solving Distributed Monitoring
+## 💼 Case Study: Automation Agency Business OS
 ### The Challenge
-As an automation specialist managing **100+ independent projects** across various Google accounts, I faced a "visibility gap." I had scripts running everywhere, but no central place to know if they were actually working or silently failing.
+As an automation specialist managing a massive distributed network, I needed more than just a "monitor." I needed a way to bridge the gap between technical reliability, lead generation, and client-facing transparency without building a custom backend for every project.
 
 ### The Solution
-I built this **Automation Health Monitor** to bridge that gap. By creating a lightweight "Heartbeat API," I enabled my scripts to report their status to a single, secure URL. 
+The **Automation Health Monitor** evolved into a **Unified Business OS**. It leverages Google Sheets as a low-code database, providing a centralized API for heartbeats, lead capture, and site configuration. 
 
 ### Key Results
-- **Seamless Scaling**: With **Auto-Registration**, I can deploy a new script and it instantly appears on my dashboard without any manual configuration.
-- **Client Anonymity**: I can monitor client scripts without needing access to their private spreadsheets.
-- **Operational Excellence**: Real-time status toggles (Nominal/Silence/Failure) ensure I catch errors before my clients do.
+- **Operations**: Zero-error silence thanks to **Trello-integrated failure alerts**.
+- **Sales**: Direct conversion of website traffic into the dashboard's **Leads Monitor**.
+- **Transparency**: Massive client trust via **Bespoke Uptime Portals**, proving value 24/7.
+- **Agility**: Remote site updates via the **Site Manager**, bypassing the need for manual code deployments.
 
 ## 🚀 Built With
 - **Frontend**: Next.js 15 (App Router) + Tailwind CSS

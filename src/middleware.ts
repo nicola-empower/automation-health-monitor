@@ -9,7 +9,9 @@ export async function middleware(req: NextRequest | any) {
     if (
         pathname.startsWith('/api/auth') ||
         pathname.startsWith('/api/heartbeat') ||
-        pathname.startsWith('/api/services') || // We will filter this in the route
+        pathname.startsWith('/api/services') ||
+        pathname.startsWith('/api/leads') ||
+        pathname.startsWith('/api/config') ||
         pathname.startsWith('/status') ||
         pathname.startsWith('/_next') ||
         pathname.includes('favicon.ico') ||
