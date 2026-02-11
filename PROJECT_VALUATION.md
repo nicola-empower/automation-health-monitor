@@ -21,8 +21,9 @@ If you were to recreate or license this system for another business, here is the
 | **Custom Status Portal** | £1,500 - £2,500 | £50 - £150 /mo |
 | **Unified Leads Monitor** | £1,000 - £2,000 | £75 - £200 /mo |
 | **Remote Site Management** | £800 - £1,500 | £50 - £100 /mo |
+| **MDX "System Logs" Engine**| £750 - £1,250 | £25 - £50 /mo |
 | **Trello Incident Engine** | £500 - £1,000 | (Included in support) |
-| **TOTAL VALUATION** | **£3,800 - £7,000+** | **£175 - £450+ /mo** |
+| **TOTAL VALUATION** | **£4,550 - £8,250+** | **£200 - £500+ /mo** |
 
 ### 💡 The "Maintenance Fee" Pitch
 Don't just sell the build. Sell the **Uptime Insurance**:

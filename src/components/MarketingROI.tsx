@@ -62,7 +62,10 @@ export function MarketingROI() {
                     <p className="text-sm text-muted-foreground max-w-xs mb-6 italic">
                         All templates from your SOCIAL_MASTER_COPY.md are synchronized here for one-click deployment.
                     </p>
-                    <button className="px-6 py-2 bg-brand-magenta/10 hover:bg-brand-magenta/20 text-brand-magenta rounded-xl text-xs font-bold border border-brand-magenta/20 transition-all">
+                    <button
+                        onClick={() => window.open('https://empowerautomation.co.uk/social-kit', '_blank')}
+                        className="px-6 py-2 bg-brand-magenta/10 hover:bg-brand-magenta/20 text-brand-magenta rounded-xl text-xs font-bold border border-brand-magenta/20 transition-all"
+                    >
                         OPEN_MASTER_LIBRARY
                     </button>
                 </div>

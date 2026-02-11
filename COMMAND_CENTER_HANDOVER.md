@@ -1,6 +1,6 @@
-# Handover: Connecting Your Unified Command Center
+# Handover: Connecting Your Business OS Command Center
 
-I have upgraded your **Automation Health Monitor** into a **Business OS**. It now has tabs for Health, Leads, Marketing ROI, and Site Management.
+I have upgraded your **Automation Health Monitor** into a full-scale **Business OS**. It now functions as the centralized hub for your health monitoring, lead generation, marketing ROI, and website configuration.
 
 To make the system fully operational, please follow these steps:
 
