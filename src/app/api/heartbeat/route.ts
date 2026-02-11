@@ -59,6 +59,15 @@ export async function POST(req: NextRequest) {
         const updateRange = `D${rowIndex + 1}:F${rowIndex + 1}`;
         await updateSheetData(spreadsheetId, updateRange, [[status || 'nominal', currentTime, message || '']]);
 
+        // TRIGGER TRELLO ALERT ON FAILURE
+        if (status?.toLowerCase() === 'error' || status?.toLowerCase() === 'failure') {
+            const { createTrelloCard } = await import('@/lib/trello');
+            await createTrelloCard(
+                `📟 FAILURE: ${service_name || service_id}`,
+                `**Service:** ${service_name || service_id}\n**Client:** ${client_name || 'General'}\n**Error:** ${message || 'No details provided'}\n**Time:** ${currentTime}`
+            );
+        }
+
         // Fetch isActive status from the existing row (column I, index 8)
         const isActive = String(values[rowIndex][8]).toUpperCase() !== "FALSE";
 

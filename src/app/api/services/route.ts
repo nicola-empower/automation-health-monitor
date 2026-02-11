@@ -36,14 +36,34 @@ export async function GET(req: NextRequest) {
             isActive: String(row[8]).toUpperCase() === "FALSE" ? false : true // Column I
         }));
 
+        let branding = null;
+
         // Apply filtering if clientNameFilter is provided
         if (clientNameFilter) {
             services = services.filter((s: any) =>
                 s.clientName.toLowerCase() === clientNameFilter.toLowerCase()
             );
+
+            // Fetch Branding Data from 'Clients' tab if it exists
+            try {
+                const clientData = await getSheetData(spreadsheetId, 'Clients!A2:C');
+                if (clientData) {
+                    const clientBranding = clientData.find((row: any) =>
+                        row[0] && row[0].toString().toLowerCase().trim() === clientNameFilter.toLowerCase().trim()
+                    );
+                    if (clientBranding) {
+                        branding = {
+                            logo: clientBranding[1] ? clientBranding[1].toString().trim() : null,
+                            theme: (clientBranding[2] ? clientBranding[2].toString().toLowerCase().trim() : 'dark')
+                        };
+                    }
+                }
+            } catch (e) {
+                console.warn("Clients tab not found or inaccessible. Falling back to default branding.");
+            }
         }
 
-        return NextResponse.json(services);
+        return NextResponse.json({ services, branding });
     } catch (error: any) {
         console.error('Services API Error Details:', {
             message: error.message,

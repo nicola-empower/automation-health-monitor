@@ -18,7 +18,8 @@ export default function Home() {
       const response = await fetch('/api/services');
       if (response.ok) {
         const data = await response.json();
-        setServices(data);
+        // The API now returns { services, branding }
+        setServices(Array.isArray(data) ? data : data.services);
       } else {
         const errorText = await response.text();
         console.error("Uplink Error:", errorText);
