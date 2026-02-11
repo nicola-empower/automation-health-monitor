@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050505;
+  --foreground: #e0e7ff;
+  --card: #0a0a0a;
+  --card-foreground: #e0e7ff;
+  --popover: #050505;
+  --popover-foreground: #e0e7ff;
+  --primary: #00ff00;
+  --primary-foreground: #000000;
+  --secondary: #1e1e1e;
+  --secondary-foreground: #e0e7ff;
+  --muted: #1e1e1e;
+  --muted-foreground: #94a3b8;
+  --accent: #06b6d4;
+  --accent-foreground: #e0e7ff;
+  --destructive: #ef4444;
+  --destructive-foreground: #e0e7ff;
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #00ff00;
+  
+  --success: #00ff00;
+  --warning: #fbbf24;
+  --error: #ef4444;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-hover:hover {
+  background: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+}
+
+/* Status Glows */
+.glow-success {
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+}
+
+.glow-warning {
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+}
+
+.glow-error {
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+}
+
