@@ -14,36 +14,28 @@ This dashboard acts as a centralized "Command Center" for all your automation lo
 - **Telemetry**: Tracks "Time Ago" since the last heartbeat and alerts you (Green/Amber/Red) based on custom schedules.
 - **Backend**: Uses a simple Google Sheet as the source of truth—no database setup required.
 
-## 🛠️ Setup
+## 💼 Case Study: Solving Distributed Monitoring
+### The Challenge
+As an automation specialist managing **10+ independent projects** across various Google accounts, I faced a "visibility gap." I had scripts running everywhere, but no central place to know if they were actually working or silently failing.
 
-### 1. Environment Variables
-Create a `.env.local` file with the following:
-```bash
-NEXTAUTH_SECRET=your_random_secret
-DASHBOARD_PASSWORD=your_ui_password
-GOOGLE_SHEET_ID=your_sheet_id
-GOOGLE_SERVICE_ACCOUNT_KEY='{ ... your json key ... }'
-HEARTBEAT_SECRET_KEY=your_api_key
-```
+### The Solution
+I built this **Automation Health Monitor** to bridge that gap. By creating a lightweight "Heartbeat API," I enabled my scripts to report their status to a single, secure URL. 
 
-### 2. Connecting Scripts
-Use the included `apps-script-connector.gs` to connect any Google Apps Script to the dashboard. Simply update the `CONFIG` object with your Vercel URL and Secret Key.
+### Key Results
+- **Seamless Scaling**: With **Auto-Registration**, I can deploy a new script and it instantly appears on my dashboard without any manual configuration.
+- **Client Anonymity**: I can monitor client scripts without needing access to their private spreadsheets.
+- **Operational Excellence**: Real-time status toggles (Nominal/Silence/Failure) ensure I catch errors before my clients do.
 
-## 🛰️ API Endpoints
+## 🚀 Built With
+- **Frontend**: Next.js 15 (App Router) + Tailwind CSS
+- **Design**: "Tech-Noir" Glassmorphism Aesthetic
+- **Data**: Google Sheets API (Serverless Database)
+- **Auth**: NextAuth.js (Secure Terminal Access)
+- **Icons**: Lucide React
 
-### `POST /api/heartbeat`
-Receives pings from your scripts.
-**Headers:** `x-api-key: your_key`
-**Payload:**
-```json
-{
-  "service_id": "unique-id",
-  "service_name": "Friendly Name",
-  "client_name": "Client",
-  "status": "nominal",
-  "message": "Everything is fine."
-}
-```
+## 🛠️ Setup & Usage
+Detailed setup instructions for the **Heartbeat API** and **Service Account** can be found in the `apps-script-connector.gs` comments and the internal documentation.
 
 ---
-Built for **Empower VA** by Antigravity.
+Built by **Nicola Berry** | **Empower Automation**
+🔗 [empowerautomation.co.uk](https://empowerautomation.co.uk)
